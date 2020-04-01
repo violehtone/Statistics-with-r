@@ -1,0 +1,49 @@
+---
+title: "Chapter5"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+install.packages("knitr")
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+
+# ctrl+alt+i to create a new 'code chunk'
+```
+
+## Download data + create variales
+```{r}
+# set working dir & download data
+setwd('/home/villelehtonen/Desktop/statw-r')
+Nemaspec <- read.csv("data/nemaspec.csv", header=TRUE, row.names = 1)
+```
+
+```{r}
+# density data
+dens <- Nemaspec$M160b
+dens <- dens[dens != 0] #remove zeros
+
+# Define diversity variables
+N <- sum(dens)
+
+p <- dens/N
+S <- length(p)
+N1 <- -sum(p * log(p))
+N2 <- 1/sum(p^2)
+N3 <- 1/max(p)
+
+n = 100
+N = 699
+ES <- sum(1-choose(N-dens,100)/choose(N,n))
+
+# Define diversity vector
+diversity <- c(N,S,N1,N2,N3,ES)
+name_v <- c('N','S','N1','N2','N3','ES') 
+names(diversity) <- name_v
+
+```
+
+## Making a table
+```{r}
+kable(as.data.frame(diversity))
+```
