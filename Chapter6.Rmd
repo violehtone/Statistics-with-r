@@ -1,0 +1,83 @@
+---
+title: "Chapter6_exercise"
+output: html_document
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+#set the working directory
+knitr::opts_knit$set(root.dir = '/home/villelehtonen/Desktop/statw-r/IO/')
+```
+
+## Get libraries
+```{r}
+library(readr)
+```
+
+
+## Exercise 1
+```{r}
+#open data
+d <- read_tsv("scores.txt", comment="#")
+View(d)
+
+#calculate average for each pupil in a new column 'average.score'
+d$average.score <- apply(d[,2:4], 1, mean)
+```
+
+## Exercise 2
+```{r}
+#read geneexpr.txt table from server
+baseurl <- "http://www.few.vu.nl/~molenaar/courses/statR"
+f <- file.path(baseurl, 'data', 'io', 'geneexpr.txt')
+d <- read.table(f,
+                sep = "\t",
+                skip = 1,
+                na.strings = NA,
+                comment.char = "",
+                header=T)
+
+head(d)
+```
+
+## Exercise 3
+```{r}
+#Download file from URL
+filename <- "malatedehydrogenase_activity.xlsx"
+baseurl <- "http://www.few.vu.nl/~molenaar/courses/statR"
+url <- file.path(baseurl, 'data', 'io', filename)
+download.file(url, destfile = 'enzymes.xlsx')
+
+#Read file
+library(readxl)
+enzymes <- read_xlsx('enzymes.xlsx',
+                     skip=4,
+                     col_names = T,
+                     sheet = 1L)
+
+head(enzymes)
+View(enzymes)
+
+#Plotting
+d0 <- enzymes[enzymes$thyroxine==0,]
+d1 <- enzymes[enzymes$thyroxine==60,]
+
+
+#rate of the enzyme as a function of the malate concentration
+ordered <- enzymes[order(enzymes$malate),]
+
+View(ordered)
+
+plot(ordered$malate ~ ordered$rate,
+     xlab = 'Rate',
+     ylab = 'malate concentration',
+     main = 'rate of the enzyme as a function of the malate concentration',
+     type = 'p')
+
+
+plot(rate ~ malate, d0, pch=1, ylim=c(0,120))
+points(d1$malate, d1$rate, pch=19)
+
+
+```
+

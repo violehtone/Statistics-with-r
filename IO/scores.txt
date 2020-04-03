@@ -1,0 +1,6 @@
+# This table shows the scores of pupils on math in a dutch school
+pupil	test 1	test 2	test 3	gender
+1	1	5	7	m
+2	8	7.5	8.5	m
+3	5	7	6.5	f
+4	9	8.5	10	f
