@@ -1,0 +1,90 @@
+---
+title: "Chapter5"
+output: html_document
+
+#On the first line is the heading (the names of the stations), 
+# the first column contains the species names
+---
+
+```{r setup, include=FALSE}
+#install.packages("knitr")
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+
+# ctrl+alt+i to create a new 'code chunk'
+```
+
+## Download data + create variales
+```{r}
+# set working dir & download data
+setwd('/home/villelehtonen/Desktop/statw-r')
+Nemaspec <- read.csv("data/nemaspec.csv", header=TRUE, row.names = 1)
+```
+
+```{r}
+# density data
+dens <- Nemaspec$M160b
+dens <- dens[dens != 0] #remove zeros
+
+# Define diversity variables
+N <- sum(dens)
+
+p <- dens/N
+S <- length(p)
+N1 <- -sum(p * log(p))
+N2 <- 1/sum(p^2)
+N3 <- 1/max(p)
+
+n = 100
+N = 699
+ES <- sum(1-choose(N-dens,100)/choose(N,n))
+
+# Define diversity vector
+diversity <- c(N,S,N1,N2,N3,ES)
+name_v <- c('N','S','N1','N2','N3','ES') 
+names(diversity) <- name_v
+
+```
+
+## Making a table
+```{r}
+kable(as.data.frame(diversity))
+```
+
+## Chapter 9: Diversity of deep-sea nematodes
+```{r}
+#1 create matrix
+n_stations <- ncol(Nemaspec)
+div <- matrix(nrow= n_stations, ncol=6)
+
+#2 name matrix column names
+colnames(div) <- c('N','S','N1','N2','N3','ES')
+stations <- colnames(Nemaspec)
+rownames(div) <- stations
+
+#3 estimate diversity
+
+for(i in c(1:ncol(Nemaspec))) {
+  dens <- Nemaspec[[i]]
+  dens <- dens[dens != 0]
+  
+  N <- sum(dens)
+
+  p <- dens/N
+  S <- length(p)
+  N1 <- -sum(p * log(p))
+  N2 <- 1/sum(p^2)
+  N3 <- 1/max(p)
+  
+  n = 100
+  N = 699
+  ES <- sum(1-choose(N-dens,100)/choose(N,n))
+  
+  diversity <- c(N,S,N1,N2,N3,ES)
+  div[i,] <- diversity
+}
+
+#4
+div
+```
+
